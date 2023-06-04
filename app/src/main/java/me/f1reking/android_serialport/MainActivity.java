@@ -22,23 +22,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import me.f1reking.serialportlib.entity.BAUDRATE;
+
+import java.io.File;
+import java.util.Arrays;
+
+import me.f1reking.serialportlib.SerialPortHelper;
 import me.f1reking.serialportlib.entity.DATAB;
 import me.f1reking.serialportlib.entity.FLOWCON;
 import me.f1reking.serialportlib.entity.PARITY;
 import me.f1reking.serialportlib.entity.STOPB;
-import java.io.File;
-import java.util.Arrays;
-import me.f1reking.serialportlib.SerialPortHelper;
 import me.f1reking.serialportlib.listener.IOpenSerialPortListener;
 import me.f1reking.serialportlib.listener.ISerialPortDataListener;
 import me.f1reking.serialportlib.listener.Status;
 
 /**
  * @author F1ReKing
- * @date 2019/11/1 09:38
- * @Description
+ * {@code @date} 2019/11/1 09:38
+ * {@code @Description}
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -86,28 +88,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSerialPortHelper.setIOpenSerialPortListener(new IOpenSerialPortListener() {
             @Override
             public void onSuccess(final File device) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, device.getPath() + " :串口打开成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, device.getPath() + " :串口打开成功", Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onFail(final File device, final Status status) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (status) {
-                            case NO_READ_WRITE_PERMISSION:
-                                Toast.makeText(MainActivity.this, device.getPath() + " :没有读写权限", Toast.LENGTH_SHORT).show();
-                                break;
-                            case OPEN_FAIL:
-                            default:
-                                Toast.makeText(MainActivity.this, device.getPath() + " :串口打开失败", Toast.LENGTH_SHORT).show();
-                                break;
-                        }
+                runOnUiThread(() -> {
+                    switch (status) {
+                        case NO_READ_WRITE_PERMISSION:
+                            Toast.makeText(MainActivity.this, device.getPath() + " :没有读写权限", Toast.LENGTH_SHORT).show();
+                            break;
+                        case OPEN_FAIL:
+                        default:
+                            Toast.makeText(MainActivity.this, device.getPath() + " :串口打开失败", Toast.LENGTH_SHORT).show();
+                            break;
                     }
                 });
             }
@@ -133,12 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
-        etInput = (EditText) findViewById(R.id.et_input);
-        btnSend = (Button) findViewById(R.id.btn_send);
+        etInput = findViewById(R.id.et_input);
+        btnSend = findViewById(R.id.btn_send);
         btnSend.setOnClickListener(MainActivity.this);
-        btnOpen = (Button) findViewById(R.id.btn_open);
+        btnOpen = findViewById(R.id.btn_open);
         btnOpen.setOnClickListener(MainActivity.this);
-        btnClose = (Button) findViewById(R.id.btn_close);
+        btnClose = findViewById(R.id.btn_close);
         btnClose.setOnClickListener(MainActivity.this);
 
     }
